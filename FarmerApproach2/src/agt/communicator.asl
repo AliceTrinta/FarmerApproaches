@@ -10,17 +10,16 @@
 	!iotObjectCycle.
 	
 +!iotObjectCycle : true <-
-	.print("Mandando para a RML");
 	.sendToRml;
 	.wait(1000);
 	!iotObjectCycle.
 
 +!on : true <-
-	.print("Running the command 1.");
+	.print("Asking mediator to turn on irrigator.");
 	.send(mediator, achieve, on).
 	
 +!off : true <-
-	.print("Running the command 2.");
+	.print("Asking mediator to turn off irrigator.");
 	.send(mediator, achieve, off).
 
 { include("$jacamoJar/templates/common-cartago.asl") }

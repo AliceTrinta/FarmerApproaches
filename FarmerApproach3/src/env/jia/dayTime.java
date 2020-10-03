@@ -24,11 +24,11 @@ public class dayTime extends DefaultInternalAction {
         LocalTime secondDate = LocalTime.of(19, 0);
         LocalTime thirdDate = LocalTime.of(5, 0);
         if(firstDate.isAfter(secondDate)){
-            System.out.println("esta de noite");
-            return true;
+            System.out.println("Afternoon");
+            return false;
         }
         else if(firstDate.isBefore(thirdDate)){
-            System.out.println("esta de dia");
+            System.out.println("Morning.");
             return true;
         }
         return false;

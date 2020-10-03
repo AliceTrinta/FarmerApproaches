@@ -1,51 +1,69 @@
 /* Initial beliefs and rules */
 
 /* Initial goals */
-!start.
+
+!light.
+!humidity.
+!temperature.
+!pH.
 
 /* Plans */
 
 +light(T) <-
-	.send(communicator, tell, light(T));
-	if (T = "luzSem"){
-		if(jia.dayTime("Hey")){
-			.print("Algo errado, sem luz ao dia");
-		}
-	}.
+	.send(communicator, tell, light(T)).
+	
 
 +humidity(T) <-
-	.send(communicator, tell, humidity(T));
-	if(T = "soloUmido"){
-		if(jia.irrigation("hey")){
-			!on
-		}	
-	}
-	if (T = "soloSeco"){
-		if(jia.chuvas("hey")){
-			!off
-		}
-		!on
-	}.
+	.send(communicator, tell, humidity(T)).
+
 
 +temperature(T) <-
-	.send(communicator, tell, temperature(T));
-	if (T <= 10){
-		.print("Algo errado, muito frio pode prejudicar a planta");
-	}
-	if (T >= 35){
-		.print("Algo errado, muito calor pode prejudicar a planta");
-	}.
+	.send(communicator, tell, temperature(T)).
+	
 	
 +pH(T) <-
-	.print("Enviando ao communicador");
 	.send(communicator, tell, pH(T)).
 
+
++!light : light == "noLight" & jia.dayTime("Hey")  <-
+	.send(communicator, tell, light(WithoutLighDuringTheDay));
+	!light.
+
++!light : light == "withLight" & jia.dayTime("Hey") == false <-
+	.send(communicator, tell, light(LightDuringTheNight));
+	!light.
+
++!humidity : humidity == "wet" & jia.irrigation("Hey") | T == "Dry" & jia.isRaining("Hey") == false <-	
+	!on;
+	!humidity.
+
++!humidity : humidity == "dry" & jia.isRaining("Hey") <-
+	.send(communicator, tell, humidity(humi));
+	!off;
+	!humidity.
+	
++!temperature : temperature <= 10 <-
+	.send(communicator, tell, temperature(Too_cold_for_plants));
+	!temperature.
+	
++!temperature(temp) : temperature >= 35 <-
+	.send(communicator, tell, temperature(Too_hot_for_plants));
+	!temperature.
+
++!pH : ph < 5 <-
+	.send(communicator, tell, pH(ph_level_too_Low));
+	!pH.
+
++!pH : ph > 5.8 <-
+	.send(communicator, tell, pH(ph_level_too_High))
+	!pH.
+
 +!on : true <-
-	.print("Pedindo ao argo para ligar o irrigador.");
+	.print("Asking argo to turn on the irrigator.");
 	.send(argo, achieve, on).
 	
 +!off : true <-
-	.print("Pedindo ao argo para desligar o irrigador.");
+	.print("Asking argo to turn off the irrigator.");
 	.send(argo, achieve, off).
 
 { include("$jacamoJar/templates/common-cartago.asl") }

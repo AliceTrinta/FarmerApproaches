@@ -19,11 +19,11 @@ public class irrigation extends DefaultInternalAction {
         LocalTime secondDate = LocalTime.of(8, 0);
         LocalTime thirdDate = LocalTime.of(20, 0);
         if(firstDate.isBefore(secondDate) && firstDate.isAfter(secondDate.minusMinutes(1))){
-            System.out.println("esta de dia");
+            System.out.println("Time to irrigate - morning.");
             return true;
         }
         else if(firstDate.isBefore(thirdDate) && firstDate.isAfter(thirdDate.minusMinutes(1))){
-            System.out.println("esta de noite");
+            System.out.println("Time to irrigate - afternoon.");
             return true;
         }
         return false;

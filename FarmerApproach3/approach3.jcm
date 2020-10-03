@@ -14,7 +14,7 @@
 
 mas approach3 {
 
-    agent sample_agent : mediador.asl {
+    agent mediator : mediador.asl {
     	focus: wkp.device
 	}    
 	

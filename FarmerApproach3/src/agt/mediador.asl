@@ -1,55 +1,35 @@
 /* Initial beliefs and rules */
 
 /* Initial goals */
+
 !start.
+!light.
+!humidity.
+!temperature.
+!pH.
 
 /* Plans */
 
 +!start : true <- 
 	percepts;
-	//.wait(1000);
+	.wait(1000);
 	!start.
 
-+light(T) <-
-	.print("peguei luz").
-	/*if (T = "luzSem"){
-		if(jia.dayTime("Hey")){
-			.print("Algo errado, sem luz ao dia");
-		}
-	}.*/
++!humidity : humidity == "wet" & jia.irrigation("Hey") | T == "Dry" & jia.isRaining("Hey") == false <-	
+	!on;
+	!humidity.
 
-+humidity(T) <-
-	.print("Peguei humidade").
-	/*if(T = "soloUmido"){
-		if(jia.irrigation("hey")){
-			!on
-		}	
-	}
-	if (T = "soloSeco"){
-		if(jia.chuvas("hey")){
-			!off
-		}
-		!on
-	}.*/
-
-+temperature(T) <-
-	.print("Peguei temp")
-	if (T <= 10){
-		.print("Algo errado, muito frio pode prejudicar a planta");
-	}
-	if (T >= 35){
-		.print("Algo errado, muito calor pode prejudicar a planta");
-	}.
-	
-+pH(T) <-
-	.print("Peguei Ph").
++!humidity : humidity == "dry" & jia.isRaining("Hey") <-
+	.send(communicator, tell, humidity(humi));
+	!off;
+	!humidity.
 
 +!on : true <-
-	.print("Pedindo ao artefato físico para ligar o irrigador.");
+	.print("Asking physical artifact to turn on the irrigator.");
 	act(on).
 	
 +!off : true <-
-	.print("Pedindo ao artefato físico para desligar o irrigador.");
+	.print("Asking physical artifact to turn off the irrigator.");
 	act(off).
 
 { include("$jacamoJar/templates/common-cartago.asl") }
